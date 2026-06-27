@@ -9,10 +9,13 @@ public:
         }
         if(o>n) return;
         if(o > c){
-            f(n,o,c+1,s+')');
+            s+=')';
+            f(n,o,c+1,s);
+            s.pop_back();
         }
-
-        f(n,o+1,c,s+'(');
+         s+='(';
+        f(n,o+1,c,s);
+        s.pop_back();
     }
 
     vector<string> generateParenthesis(int n) {
