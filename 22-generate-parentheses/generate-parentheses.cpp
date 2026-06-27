@@ -2,7 +2,7 @@ class Solution {
 public:
     vector<string> ans;
 
-    void f(int n,int o,int c,string s){// opening - closing
+    void f(int n,int o,int c,string &s){// opening - closing
         if(n==o && n == c){
             ans.push_back(s);
             return;
@@ -20,9 +20,9 @@ public:
 
     vector<string> generateParenthesis(int n) {
         
-        // string s="";
+        string s="";
 
-        f(n,0,0,"");
+        f(n,0,0,s);
 
         return ans;
     }
