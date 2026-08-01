@@ -1,26 +1,20 @@
 class Solution {
 public:
-    int helper(vector<int>&nums,int i,int j,bool turn){//it will take array as input and return the value of x-y x->p1 scor y p2 score
-        if(i>j){
-            return 0;
-        }
-        if (turn){
-            int x=nums[i] + helper(nums,i+1,j,false);
-            int y=nums[j] + helper(nums,i,j-1,false);
+    vector<vector<int>> dp;
+    int helper(vector<int> &nums,int i,int j){
 
-            return max(x,y);
-        }
-        else{
-            int x=-1*nums[i] + helper(nums,i+1,j,true);
-            int y=-1*nums[j] + helper(nums,i,j-1,true);
-
-            return min(x,y);
-        }
+        if(i>j) return 0;
         
-     }
-    bool predictTheWinner(vector<int>& nums) {
-        int ans=helper(nums,0,nums.size()-1,true);
 
-        return ans>=0?true:false;
+        if(dp[i][j]!=-1) return dp[i][j];
+        int x=nums[i]-helper(nums,i+1,j);//front 
+        int y=nums[j]-helper(nums,i,j-1);//back
+
+        return dp[i][j]=max(x,y);
+    }
+    bool predictTheWinner(vector<int>& nums) {
+        int n=nums.size();
+        dp.resize(n,vector<int>(n,-1));
+        return helper(nums,0,n-1)>=0;
     }
 };
