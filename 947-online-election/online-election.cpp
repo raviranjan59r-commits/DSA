@@ -28,10 +28,9 @@ public:
     
     int q(int t) {
         
-        auto it=lower_bound(time.begin(),time.end(),t);
+        auto it=upper_bound(time.begin(),time.end(),t);
 
-        int idx=it-time.begin();
-        if(idx >=time.size() || time[idx]!=t) idx--;
+        int idx=it-time.begin()-1;
 
         return leaders[idx];
         
