@@ -15,8 +15,8 @@ public:
     }
     int stoneGameII(vector<int>& piles) {
         dp.resize(100,vector<int>(100,INT_MIN));
-        int total = accumulate(piles.begin(), piles.end(), 0);
-        int diff = helper(piles, 0, 1);
-        return (total + diff) / 2;
+        int total = accumulate(piles.begin(), piles.end(), 0);//alice + bob
+        int diff = helper(piles, 0, 1);//alice - bob
+        return (total + diff) / 2;// (alice + bob + alice - bob)/2  == alice
     }
 };
