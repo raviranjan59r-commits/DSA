@@ -11,12 +11,9 @@ public:
             int idx=mp[operations[i][0]];
             mp.erase(operations[i][0]);
             mp[operations[i][1]]=idx;
+            nums[idx]=operations[i][1];
         }
         
-        for(auto ele: mp){
-            nums[ele.second]=ele.first;
-        }
-
         return nums;
     }
 };
