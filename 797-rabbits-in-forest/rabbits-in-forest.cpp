@@ -6,7 +6,7 @@ public:
         for(int x:answers) mp[x+1]++;
         int res=0;
         for(auto &[ans,freq]:mp){
-            res+=ceil((double)freq/ans*1.0) *ans;
+            res+=ceil((double)freq/ans) *ans;
         }
         return res;
     }
