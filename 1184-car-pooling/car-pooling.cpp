@@ -1,15 +1,15 @@
 class Solution {
 public:
     bool carPooling(vector<vector<int>>& trips, int capacity) {
-        map<int,int> events;
+        int diff[1002]={0};
 
         for(auto &trip:trips){
-            events[trip[1]]+=trip[0];
-            events[trip[2]]-=trip[0];
+            diff[trip[1]]+=trip[0];
+            diff[trip[2]]-=trip[0];
         }
         int current=0;
-        for(auto &[a,b]:events){
-            current+=b;
+        for(int i=0;i<1002;i++){
+            current+=diff[i];
             if(current>capacity) return false;
         }
         return true;
