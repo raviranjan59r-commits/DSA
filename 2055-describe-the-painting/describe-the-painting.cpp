@@ -11,24 +11,15 @@ public:
 
         vector<vector<long long>> ans;
 
-        ll left=-1;
-        ll right=-1;
-        long long current_col=0;
+        ll prev=-1;
+        long long color=0;
         // now we do have the sorted 
         for(auto &[interval,delta]:mp){
-            if(left==-1){
-                left=interval;
+            if(prev!=-1 && color!=0){
+                ans.push_back({prev,interval,color});
             }
-            else{
-                if(current_col==0){
-                    current_col+=delta;
-                    left=interval;
-                    continue;
-                }
-                ans.push_back({left,interval,current_col});
-                left=interval;
-            }
-            current_col+=delta;
+            prev=interval;
+            color+=delta;
         }
         return ans;
     }
