@@ -4,11 +4,8 @@ public:
         map<int,int> events;
 
         for(auto &trip:trips){
-            int c = trip[0];
-            int s = trip[1];
-            int e = trip[2];
-            events[s]+=c;
-            events[e]-=c;
+            events[trip[1]]+=trip[0];
+            events[trip[2]]-=trip[0];
         }
         int current=0;
         for(auto &[a,b]:events){
