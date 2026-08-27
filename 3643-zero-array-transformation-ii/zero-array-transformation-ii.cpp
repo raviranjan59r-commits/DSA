@@ -1,6 +1,6 @@
 class Solution {
 public:
-    bool  f(vector<int> nums, vector<vector<int>>& queries,int mid){
+    bool  f(vector<int> &nums, vector<vector<int>>& queries,int mid){
         vector<int> diff(nums.size()+1,0);
         for(int i=0;i<=mid;i++){
             int l=queries[i][0];
