@@ -12,9 +12,9 @@ public:
 
         for(auto &it:freq){
             if(it.second==max_freq){
-                ans++;
+                ans+=max_freq;
             }
         }
-        return ans*max_freq;
+        return ans;
     }
 };
