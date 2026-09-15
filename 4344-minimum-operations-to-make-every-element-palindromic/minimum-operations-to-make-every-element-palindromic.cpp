@@ -1,65 +1,67 @@
 class Solution {
 public:
-    vector<int> pal[2];
-
-    long long makePal(int x,int len){
-        long long res=x;
-        int t=x;
-        
-        if(len%2)
-            t/=10;
-        
-        while(t){
-            res=res*10+t%10;
-            t/=10;
-        }
-        
-        return res;
-    }
-
-    void generate(){
-        for(int len=1;len<=9;len++){
-            int half=(len+1)/2;
-            
-            int start=1;
-            for(int i=1;i<half;i++)
-                start*=10;
-            
-            int end=start*10-1;
-            
-            for(int x=start;x<=end;x++){
-                long long p=makePal(x,len);
-                
-                pal[p%2].push_back(p);
-            }
-        }
-    }
-
-    long long get(int x){
-        vector<int>&v=pal[x%2];
-        
-        auto it=lower_bound(v.begin(),v.end(),x);
-        
-        long long ans=LLONG_MAX;
-        
-        if(it!=v.end())
-            ans=min(ans,abs((long long)x-*it));
-        
-        if(it!=v.begin()){
-            --it;
-            ans=min(ans,abs((long long)x-*it));
-        }
-        
-        return ans/2;
-    }
-
     long long minOperations(vector<int>& nums){
-        generate();
+        static const auto pals=[]()->pair<vector<long long>,vector<long long>>{
+            vector<long long> oddv,evenv;
+            
+            // Generate all palindromes using their first half
+            for(long long r=1;r<=99999;r++){
+                
+                // Generate odd length palindrome
+                long long x=r,t=r/10;
+                
+                while(t){
+                    x=x*10+t%10;
+                    t/=10;
+                }
+                
+                if(x&1) oddv.push_back(x);
+                else evenv.push_back(x);
+                
+                // Generate even length palindrome
+                x=r;
+                t=r;
+                
+                while(t){
+                    x=x*10+t%10;
+                    t/=10;
+                }
+                
+                if(x&1) oddv.push_back(x);
+                else evenv.push_back(x);
+            }
+            
+            // Sort so we can use binary search
+            sort(oddv.begin(),oddv.end());
+            sort(evenv.begin(),evenv.end());
+            
+            return {move(oddv),move(evenv)};
+        }();
         
         long long ans=0;
         
-        for(auto x:nums)
-            ans+=get(x);
+        for(int v:nums){
+            // Since we can only change by 2, parity never changes
+            const vector<long long>&p=(v&1)?pals.first:pals.second;
+            
+            // Find the first palindrome >= v
+            auto it=lower_bound(p.begin(),p.end(),v);
+            
+            long long best=LLONG_MAX;
+            
+            // Check palindrome on the right
+            if(it!=p.end())
+                best=min(best,*it-v);
+            
+            // Check palindrome on the left
+            if(it!=p.begin()){
+                --it;
+                best=min(best,v-*it);
+            }
+            
+            // Every operation changes the number by 2
+            ans+=best/2;
+        }
         
         return ans;
     }
