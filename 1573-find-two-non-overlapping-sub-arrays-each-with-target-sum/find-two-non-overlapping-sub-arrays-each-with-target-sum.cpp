@@ -39,7 +39,7 @@ public:
         return suff;
     }
     int minSumOfLengths(vector<int>& arr, int target) {
-        //brute force
+        //optimal
 
         int n=arr.size();
         vector<int>pre=prefix(target,arr);
