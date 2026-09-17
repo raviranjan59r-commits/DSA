@@ -1,75 +1,67 @@
 class Solution {
 public:
-    int count =0;
-int inversion(vector<int>& v1,vector<int>& v2){
-    int i=0;//v1
-    int j=0;//v2
-    int count1=0;
-    while(i<v1.size() && j<v2.size()){
-        if((long long)v1[i]>(long long) 2 *v2[j]){
-            count1+=v1.size()-i;
-            j++;
+    vector<int> st;
+
+    void point_update(int i,int l,int r,int idx){
+        if(l==r){
+            st[i]++;
+            return;
         }
-        else i++;
-    }
-    return count1;
-}
-void merge(vector<int>& v1,vector<int>& v2,vector<int>& res){
-    int n1=v1.size();
-    int n2=v2.size();
-    int i=0,j=0,k=0;
-    while(i<n1 && j<n2){
-        if(v1[i]<v2[j]) {
-            res[k]=v1[i];
-            i++;
+
+        int mid=l+(r-l)/2;
+
+        if(mid>=idx){
+            point_update(i*2+1,l,mid,idx);
         }
-        else {
-            res[k]=v2[j];
-            j++;
+        else{
+            point_update(i*2+2,mid+1,r,idx);
         }
-        k++;
+
+        st[i]=st[i*2+1]+st[i*2+2];
     }
-    if(i==n1){
-        while(j<n2){
-            res[k]=v2[j];
-            j++;
-            k++;
+
+    int Query(int i,int l,int r,int start,int end){
+        if(l>end || r<start) return 0;
+
+        if(start<=l && r<=end){
+            return st[i];
         }
+
+        int mid=l+(r-l)/2;
+
+        return Query(i*2+1,l,mid,start,end)
+             + Query(i*2+2,mid+1,r,start,end);
     }
-    else if(j==n2){
-        while(i<n1){
-            res[k]=v1[i];
-            i++;
-            k++;
-        }
-    }
-}
-void mergeSort(vector<int>&nums){
-    int n=nums.size();
-    if(n==1) return;
-    int n1=n/2;
-    int n2=n-n1;
-    vector<int>v1(n1);
-    vector<int>v2(n2);
-    for(int i=0;i<n1;i++){
-        v1[i]=nums[i];
-    }
-    for(int i=0;i<n2;i++){
-        v2[i]=nums[i+n1];
-    }
-    mergeSort(v1);
-    mergeSort(v2);
-    //counting inversion
-    count+=inversion(v1,v2);
-    merge(v1,v2,nums);
-    v1.clear();
-    v2.clear();
-}
+
     int reversePairs(vector<int>& nums) {
-        //brute force
-        mergeSort(nums);
+        int n=nums.size();
+
+        // store unique element in sorted order
+
+        vector<int>v=nums;
+
+        sort(v.begin(),v.end());
+        v.erase(unique(v.begin(),v.end()),v.end());
+
+        int m=v.size();
+
+        st.assign(4*m,0);
+
+        long long count=0;
+
+        for(int i=0;i<n;i++){
+
+            long long x=2LL*nums[i];
+
+            int pos=upper_bound(v.begin(),v.end(),x)-v.begin();
+
+            count+=Query(0,0,m-1,pos,m-1);
+
+            int idx=lower_bound(v.begin(),v.end(),nums[i])-v.begin();
+
+            point_update(0,0,m-1,idx);
+        }
 
         return count;
-        
     }
 };
