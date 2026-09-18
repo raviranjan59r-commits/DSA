@@ -79,7 +79,6 @@ public:
         // we can use a max segment tree and then use binary search to find the closest greter basket
 
         int n=fruits.size();
-
         nums=baskets;
 
         st.resize(4*n);
@@ -88,35 +87,26 @@ public:
         for(int i=0;i<n;i++){
             int l=0;
             int r=n-1;
+            int idx=-1;
+           while(l<=r){
+            int mid=l+(r-l)/2;
 
-            while(l<r){
-                int mid=l+(r-l)/2;
+            int leftIdx=getMax(0,0,n-1,0,mid);
 
-                int idx=getMax(0,0,n-1,0,mid);
-
-                if(idx!=-1 && nums[idx]>=fruits[i]){
-                    r=mid;
-                }
-                else{
-                    l=mid+1;
-                }
+            if(leftIdx!=-1 && nums[leftIdx]>=fruits[i]){
+                idx=leftIdx;
+                r=mid-1;
             }
-
-            int idx=getMax(0,0,n-1,0,l);
-
-            if(idx!=-1 && nums[idx]>=fruits[i]){
-                point_update(0,0,n-1,idx);
+            else{
+                l=mid+1;
             }
         }
-
+        if(idx!=-1) point_update(0,0,n-1,idx);
+        }
         int count=0;
-
         for(int i=0;i<n;i++){
-            if(nums[i]!=-1){
-                count++;
-            }
+            if(nums[i]!=-1) count++;
         }
-
         return count;
     }
 };
