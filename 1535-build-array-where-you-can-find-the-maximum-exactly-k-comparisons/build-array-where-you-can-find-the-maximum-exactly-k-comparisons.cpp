@@ -8,7 +8,7 @@ public:
             return score==k;
         }
         if(score>k) return 0;
-        if(lastMax!=-1 && t[size][lastMax][score]!=-1) return t[size][lastMax][score];
+        if(t[size][lastMax][score]!=-1) return t[size][lastMax][score];
         // choosing between 1 to m
         long long res=0;
         for(int i=1;i<=m;i++){
@@ -22,14 +22,11 @@ public:
 
             res=(res+take)%M;
         }
-        if(lastMax!=-1){
-            t[size][lastMax][score]=res;
-        }
-        return res;
+        return  t[size][lastMax][score]=res;
 
     }
     int numOfArrays(int n, int m, int k) {
         memset(t,-1,sizeof(t));
-        return solve(0,-1,0,n,m,k);
+        return solve(0,0,0,n,m,k);
     }
 };
