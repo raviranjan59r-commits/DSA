@@ -1,32 +1,29 @@
 class Solution {
 public:
+    using ll=long long;
     vector<long long> resultArray(vector<int>& nums, int k) {
-        int n = nums.size();
+        vector<vector<ll>> dp(nums.size(),vector<ll>(k,0));
 
-        vector<long long> result(k, 0);
-        vector<long long> prevCount(k, 0);
+        int r=nums[0]%k;
+        dp[0][r]++;
 
-        for(int i = 0; i < n; i++) {
+        for(int i=1;i<nums.size();i++){
+            ll newRem=(nums[i])%k;
 
-            //index i par end hone waale all subarrays
-            vector<long long> currCount(k, 0);
-
-            int currElementRemainder = nums[i]%k;
-            currCount[currElementRemainder]++;
-
-            for(int oldRem = 0; oldRem <= k-1; oldRem++) {
-                int newRemain = ((long long)oldRem * nums[i] % k) % k;
-
-                currCount[newRemain] += prevCount[oldRem];
-            }
-
-            prevCount = move(currCount);
-
-            for(int x = 0; x <= k-1; x++) {
-                result[x] += prevCount[x];
+            dp[i][newRem]++;
+            for(int j=0;j<k;j++){
+                ll rem=(1LL * j*nums[i])%k;
+                dp[i][rem]+=dp[i-1][j];
             }
         }
+        //return prefix sum
+        vector<ll> ans(k,0);
 
-        return result;
+        for(int i=0;i<nums.size();i++){
+            for(int j=0;j<k;j++){
+                ans[j]+=dp[i][j];
+            }
+        }
+        return ans;
     }
 };
