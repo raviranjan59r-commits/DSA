@@ -4,16 +4,16 @@ public:
     vector<long long> resultArray(vector<int>& nums, int k) {
         vector<vector<ll>> dp(nums.size(),vector<ll>(k,0));
 
-        int r=nums[0]%k;
-        dp[0][r]++;
+        int rem=nums[0]%k;
+        dp[0][rem]++;
 
         for(int i=1;i<nums.size();i++){
-            ll newRem=(nums[i])%k;
+            rem=(nums[i])%k;
 
-            dp[i][newRem]++;
+            dp[i][rem]++;
             for(int j=0;j<k;j++){
-                ll rem=(1LL * j*nums[i])%k;
-                dp[i][rem]+=dp[i-1][j];
+                ll newRem=(1LL * j*nums[i])%k;
+                dp[i][newRem]+=dp[i-1][j];
             }
         }
         //return prefix sum
