@@ -13,16 +13,16 @@ public:
         for(int i=n-1;i>=0;i--){
             suffSum[i]=suffSum[i+1] + nums[i];
         }
-        // iterate through preSum
+        // iterate through suffSum
         int minOp=INT_MAX;
-        for(int i=0;i<=n;i++){
-            if(preSum[i]>x) break;
-            int y=x-preSum[i];
+        for(int i=n;i>=0;i--){
+            if(suffSum[i]>x) break;
+            int y=x-suffSum[i];
 
-            auto it=lower_bound(suffSum.rbegin(),suffSum.rend()-i-1,y);
+            auto it=lower_bound(preSum.begin(),preSum.begin()+i+1,y);
 
-            if(it!=suffSum.rend() && *it==y){
-                int len=i+(it-suffSum.rbegin());
+            if(it!=preSum.begin()+i+1 && *it==y){
+                int len=n-i + (it-preSum.begin());
                 minOp=min(minOp,len);
             }
         }
