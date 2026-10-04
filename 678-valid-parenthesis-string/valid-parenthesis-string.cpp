@@ -1,24 +1,32 @@
 class Solution {
 public:
-    int t[100][100];
-    bool solve(string &s ,int open,int i){
-        if(open<0) return false;
-        if(i>=s.length()){
-            return open==0;
-        }
-        if(t[open][i]!=-1) return t[open][i];
-        if(s[i]=='('){
-            return t[open][i]=solve(s,open+1,i+1);
-        }
-        else if(s[i]==')'){
-            return t[open][i]=solve(s,open-1,i+1);
-        }
-        else{
-            return t[open][i]=(solve(s,open+1,i+1) || solve(s,open-1,i+1) || solve(s,open,i+1));
-        }
-    }
     bool checkValidString(string s) {
-        memset(t,-1,sizeof(t));
-        return solve(s,0,0);
+        stack<int> open;
+        stack<int> star;
+
+        for(int i=0;i<s.length();i++){
+            if(s[i]=='(') open.push(i);
+            else if(s[i]=='*') star.push(i);
+            else{
+                if(!open.empty()) open.pop();
+                else{
+                    if(!star.empty()) star.pop();
+                    else return false;
+                }
+            }
+        }
+
+        while(!open.empty()){
+            if(star.empty()) return false;
+
+            if(star.top()>open.top()){
+                star.pop();
+                open.pop();
+            }
+            else{
+                return false;
+            }
+        }
+        return open.empty();
     }
 };
