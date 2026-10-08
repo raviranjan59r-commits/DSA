@@ -8,7 +8,7 @@ public:
         vector<int> dp(n,1);
         vector<int> prevIdx(n,-1);
 
-        int idx=0;
+        int maxIdx=0;
 
         for(int i=0;i<n;i++){
             for(int j=0;j<i;j++){
@@ -18,8 +18,8 @@ public:
                         prevIdx[i]=j;
                     }
 
-                    if(dp[idx]<dp[i]){
-                        idx=i;
+                    if(dp[maxIdx]<dp[i]){
+                        maxIdx=i;
                     }
                 }
             }
@@ -27,12 +27,12 @@ public:
 
         vector<int> ans;
         while(true){
-            if(prevIdx[idx]==-1){
-                ans.push_back(nums[idx]);
+            if(prevIdx[maxIdx]==-1){
+                ans.push_back(nums[maxIdx]);
                 break;
             }
-            ans.push_back(nums[idx]);
-            idx=prevIdx[idx];
+            ans.push_back(nums[maxIdx]);
+            maxIdx=prevIdx[maxIdx];
         }
         return ans;
     }
