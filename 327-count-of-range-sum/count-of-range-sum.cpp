@@ -1,78 +1,67 @@
 class Solution {
 public:
-    long long count=0;
+    vector<int> st;
 
-    vector<long long> merge(vector<long long>&left,vector<long long>&right,int lower,int upper){
-        int n=left.size();
-        int m=right.size();
-
-        int l=0;
-        int r=0;
-
-        // count valid pairs
-        for(int j=0;j<m;j++){
-            while(l<n && left[l]<right[j]-upper)
-                l++;
-
-            while(r<n && left[r]<=right[j]-lower)
-                r++;
-
-            count+=r-l;
+    void update(int node,int l,int r,int pos){
+        if(l==r){
+            st[node]++;
+            return;
         }
 
-        // normal merge
-        vector<long long> res;
-        int i=0;
-        int j=0;
+        int mid=(l+r)/2;
 
-        while(i<n && j<m){
-            if(left[i]<=right[j]){
-                res.push_back(left[i]);
-                i++;
-            }
-            else{
-                res.push_back(right[j]);
-                j++;
-            }
-        }
+        if(pos<=mid)
+            update(2*node,l,mid,pos);
+        else
+            update(2*node+1,mid+1,r,pos);
 
-        while(i<n){
-            res.push_back(left[i]);
-            i++;
-        }
-
-        while(j<m){
-            res.push_back(right[j]);
-            j++;
-        }
-
-        return res;
+        st[node]=st[2*node]+st[2*node+1];
     }
 
-    vector<long long> mergeSort(vector<long long>&nums,int lower,int upper){
+    int query(int node,int l,int r,int ql,int qr){
+        if(qr<l || r<ql)
+            return 0;
+
+        if(ql<=l && r<=qr)
+            return st[node];
+
+        int mid=(l+r)/2;
+
+        return query(2*node,l,mid,ql,qr)
+             + query(2*node+1,mid+1,r,ql,qr);
+    }
+
+    int countRangeSum(vector<int>& nums,int lower,int upper) {
         int n=nums.size();
 
-        if(n<=1) return nums;
+        vector<long long> pre(n+1,0);
 
-        int mid=n/2;
+        for(int i=0;i<n;i++)
+            pre[i+1]=pre[i]+nums[i];
 
-        vector<long long> left(nums.begin(),nums.begin()+mid);
-        vector<long long> right(nums.begin()+mid,nums.end());
+        vector<long long> v=pre;
 
-        left=mergeSort(left,lower,upper);
-        right=mergeSort(right,lower,upper);
+        sort(v.begin(),v.end());
+        v.erase(unique(v.begin(),v.end()),v.end());
 
-        return merge(left,right,lower,upper);
-    }
+        int m=v.size();
+        st.assign(4*m,0);
 
-    int countRangeSum(vector<int>& nums,int lower,int upper){
-        vector<long long> prefix(nums.size()+1,0);
+        int ans=0;
 
-        for(int i=0;i<nums.size();i++)
-            prefix[i+1]=prefix[i]+nums[i];
+        for(int i=0;i<=n;i++){
+            long long x=pre[i];
 
-        mergeSort(prefix,lower,upper);
+            int left=lower_bound(v.begin(),v.end(),x-upper)-v.begin()+1;
+            int right=upper_bound(v.begin(),v.end(),x-lower)-v.begin();
 
-        return count;
+            if(left<=right)
+                ans+=query(1,1,m,left,right);
+
+            int pos=lower_bound(v.begin(),v.end(),x)-v.begin()+1;
+            update(1,1,m,pos);
+        }
+
+        return ans;
     }
 };
